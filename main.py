@@ -5,11 +5,12 @@ from importlib import import_module
 from os import listdir
 from abc import ABC, abstractmethod
 from statistics import mean
+from pprint import pprint
 import subprocess
 import logging
 import argparse
 import sys
-import json
+# import json
 
 JAVA_BENCHMARKS_DIR = 'java_benchmarks'
 BENCHMARK_JAR_NAME = 'java_benchmarks-1.0-jar-with-dependencies.jar'
@@ -189,7 +190,7 @@ def main():
         logging.info(f'Running {name} benchmarks...')
         results[name] = benchmark_instances[name].run()
 
-    logging.info(json.dumps(results))
+    pprint(results)
 
 
 if __name__ == '__main__':

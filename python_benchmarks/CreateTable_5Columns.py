@@ -29,7 +29,6 @@ class CreateTable_5Columns(AbstractBenchmark):
         self.session.execute("USE cmpe220KS")
 
     def endQuery(self):
-        # print('Closing...')
         # Delete keyspace (also deletes table)
         self.session.execute("DROP KEYSPACE cmpe220KS")
 

@@ -29,9 +29,7 @@ public class CassandraCreateTable5Columns extends AbstractBenchmark {
 
     public void endQuery() {
         System.out.println("Closing...");
-
         session.execute("DROP KEYSPACE cmpe220KS");
-
         session.close();
     }
 
