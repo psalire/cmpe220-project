@@ -31,7 +31,7 @@ class writes_100(AbstractBenchmark):
 
     def endQuery(self):
         print('Closing...')
-        # self.session.close()
+        self.session.execute("DROP KEYSPACE cmpe220KS")
 
     def runQuery(self):
         for i in range(0,100):
