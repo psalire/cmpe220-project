@@ -43,7 +43,7 @@ public class CassandraInsert100 extends AbstractBenchmark {
     public void runQuery() {
         for (int i=0; i<100; i++) {
             session.execute(
-                "INSERT INTO fivecolumns(col1, col2, col3, col4, col5) VALUES ('Rutuja', 'Palatkar', 'SJSU', 'Student', 'ID')");
+                "INSERT INTO fivecolumns(col1, col2, col3, col4, col5) VALUES ('Rutuja_"+i+"', 'Palatkar', 'SJSU', 'Student', 'ID')");
         }
     }
 }
