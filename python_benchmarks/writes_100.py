@@ -21,12 +21,18 @@ class writes_100(AbstractBenchmark):
         cluster = Cluster()
         self.session = cluster.connect()
 
+        self.session.execute(
+            "CREATE KEYSPACE cmpe220KS "
+            "WITH replication="
+            "{'class':'SimpleStrategy','replication_factor':1}"
+        )
+        self.session.execute("USE cmpe220KS")
+        self.session.execute('CREATE TABLE fivecolumns(col1 TEXT PRIMARY KEY, col2 TEXT, col3 TEXT, col4 TEXT, col5 TEXT)')
+
     def endQuery(self):
         print('Closing...')
         # self.session.close()
 
     def runQuery(self):
-        self.session.execute('CREATE TABLE fivecolumns(col1 TEXT PRIMARY KEY, col2 TEXT, col3 TEXT, col4 TEXT, col5 TEXT)')
         for i in range(0,100):
           self.session.execute("INSERT INTO fivecolumns(col1, col2, col3, col4, col5) VALUES ('Rutuja', 'Palatkar', 'SJSU', 'Student', 'ID')")
-    
