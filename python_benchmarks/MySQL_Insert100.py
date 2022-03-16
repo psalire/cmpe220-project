@@ -11,7 +11,7 @@ from python_benchmarks.AbstractBenchmark import AbstractBenchmark
 import mysql.connector
 
 
-class MySQL_CreateTable_5Columns(AbstractBenchmark):
+class MySQL_Insert100(AbstractBenchmark):
 
     def __init__(self):
         self.category = 'Read'
@@ -26,15 +26,12 @@ class MySQL_CreateTable_5Columns(AbstractBenchmark):
         )
         self.cursor = self.db.cursor()
 
+        try:
+            self.cursor.execute("DROP DATABASE cmpe220db")
+        except Exception as e:
+            pass
         self.cursor.execute('CREATE DATABASE cmpe220db')
         self.cursor.execute('USE cmpe220db')
-
-    def endQuery(self):
-        # print('Closing...')
-        # Delete database (also deletes table)
-        self.cursor.execute("DROP DATABASE cmpe220db")
-
-    def runQuery(self):
         self.cursor.execute(
             'CREATE TABLE fivecolumns('
             'col1 VARCHAR(14) PRIMARY KEY,'
@@ -43,3 +40,15 @@ class MySQL_CreateTable_5Columns(AbstractBenchmark):
             'col4 TEXT,'
             'col5 TEXT)'
         )
+
+    def endQuery(self):
+        # print('Closing...')
+        # Delete database (also deletes table)
+        self.cursor.execute("DROP DATABASE cmpe220db")
+
+    def runQuery(self):
+        for i in range(100):
+            self.cursor.execute(
+                "INSERT INTO fivecolumns(col1, col2, col3, col4, col5) "
+                f"VALUES ('Rutuja_{i}', 'Palatkar', 'SJSU', 'Student', 'ID')"
+            )

@@ -6,11 +6,11 @@ import com.datastax.oss.driver.api.core.cql.*;
 /**
 * REQUIRED: have Cassandra DB already running
 */
-public class CassandraCreateTable5Columns extends AbstractBenchmark {
+public class CassandraCreateTable5Columns100 extends AbstractBenchmark {
 
     private CqlSession session;
 
-    public CassandraCreateTable5Columns() {
+    public CassandraCreateTable5Columns100() {
         category = "Read";
         description = "This is an example";
     }
@@ -38,8 +38,11 @@ public class CassandraCreateTable5Columns extends AbstractBenchmark {
     }
 
     public void runQuery() {
-        session.execute(
-            "CREATE TABLE fivecolumns(col1 TEXT PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
-        );
+        for (int i=0; i<100; i++) {
+            session.execute(
+                "CREATE TABLE fivecolumns"+i
+                +"(col1 TEXT PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
+            );
+        }
     }
 }

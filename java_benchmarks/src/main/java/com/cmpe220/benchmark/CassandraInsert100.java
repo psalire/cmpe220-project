@@ -6,11 +6,11 @@ import com.datastax.oss.driver.api.core.cql.*;
 /**
 * REQUIRED: have Cassandra DB already running
 */
-public class CassandraCreateTable5Columns extends AbstractBenchmark {
+public class CassandraInsert100 extends AbstractBenchmark {
 
     private CqlSession session;
 
-    public CassandraCreateTable5Columns() {
+    public CassandraInsert100() {
         category = "Read";
         description = "This is an example";
     }
@@ -29,6 +29,9 @@ public class CassandraCreateTable5Columns extends AbstractBenchmark {
             "{'class':'SimpleStrategy','replication_factor':1}"
         );
         session.execute("USE cmpe220KS");
+        session.execute(
+            "CREATE TABLE fivecolumns(col1 TEXT PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
+        );
     }
 
     public void endQuery() {
@@ -38,8 +41,9 @@ public class CassandraCreateTable5Columns extends AbstractBenchmark {
     }
 
     public void runQuery() {
-        session.execute(
-            "CREATE TABLE fivecolumns(col1 TEXT PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
-        );
+        for (int i=0; i<100; i++) {
+            session.execute(
+                "INSERT INTO fivecolumns(col1, col2, col3, col4, col5) VALUES ('Rutuja', 'Palatkar', 'SJSU', 'Student', 'ID')");
+        }
     }
 }
