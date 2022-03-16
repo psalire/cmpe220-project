@@ -35,4 +35,4 @@ class Cassandra_writes_100(AbstractBenchmark):
 
     def runQuery(self):
         for i in range(0,100):
-          self.session.execute("INSERT INTO fivecolumns(col1, col2, col3, col4, col5) VALUES ('Rutuja', 'Palatkar', 'SJSU', 'Student', 'ID')")
+            self.session.execute("INSERT INTO fivecolumns(col1, col2, col3, col4, col5) VALUES ('Rutuja', 'Palatkar', 'SJSU', 'Student', 'ID')")
