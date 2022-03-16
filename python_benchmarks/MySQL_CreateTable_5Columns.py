@@ -1,7 +1,7 @@
 '''
 REQUIRED: have MySQL already running
 docker run --name mysql -e MYSQL_ROOT_PASSWORD=root-password123 -d mysql:8
-pip install my-sql-connector
+pip install mysql-connector-python
 
 (This is run from the parent directory, so
 "python_benchmarks.AbstractBenchmark"
