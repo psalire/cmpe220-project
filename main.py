@@ -4,6 +4,7 @@ from jpype.types import *
 from importlib import import_module
 from os import listdir
 from abc import ABC, abstractmethod
+from statistics import mean
 import subprocess
 import logging
 import argparse
@@ -22,6 +23,12 @@ logging.basicConfig(
 
 parser = argparse.ArgumentParser(
     description='CMPE 220 DBMS Benchmarker Framework',
+)
+parser.add_argument(
+    '-n',
+    type=int,
+    default=10,
+    help='Number of times to run each benchmark',
 )
 parser.add_argument(
     '--no-java-compile',
@@ -46,7 +53,7 @@ parser.add_argument(
 class BenchmarkFacade(ABC):
 
     def __init__(self, args):
-        pass
+        self.n = args.n
 
     def run_benchmark(self, instance, name):
         '''
@@ -55,20 +62,27 @@ class BenchmarkFacade(ABC):
         :rtype: dict
         '''
         logging.info(f'Running benchmark "{name}"...')
-        try:
-            t = instance.benchmark()
-            logging.info(f'Time: {t}ms')
-            return {
-                'category': str(instance.getCategory()),
-                'time': float(t),
-                'success': True,
-            }
-        except Exception as e:
-            logging.error(f'Benchmark "{name}" failed!')
-            logging.exception(e)
-            return {
-                'success': False,
-            }
+        results = []
+        for i in range(self.n):
+            try:
+                t = instance.benchmark()
+                logging.info(f'i={i}, Time: {t}ms')
+                results.append(float(t))
+            except Exception as e:
+                logging.error(f'Benchmark "{name}" failed!')
+                logging.exception(e)
+                return {
+                    'success': False,
+                }
+        return {
+            'category': str(instance.getCategory()),
+            'time': {
+                'mean': mean(results),
+                'min': min(results),
+                'max': max(results),
+            },
+            'success': True,
+        }
 
     @abstractmethod
     def run(self):
@@ -99,9 +113,11 @@ class JavaBenchmarkFacade(BenchmarkFacade):
             return False
 
     def __init__(self, args):
-        self.compile_success = True
+        super().__init__(args)
         if args.no_java_compile is False:
             self.compile_success = self.compile_java_benchmarks()
+        else:
+            self.compile_success = True
         jpype.startJVM(classpath=[
             f'{JAVA_BENCHMARKS_DIR}/target/{BENCHMARK_JAR_NAME}',
         ])
