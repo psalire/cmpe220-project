@@ -35,12 +35,7 @@ public class CassandraCreateTable5Columns extends AbstractBenchmark {
 
     public void runQuery() {
         session.execute(
-            "CREATE TABLE fivecolumns("+
-            "col1 TEXT PRIMARY KEY,"+
-            "col2 TEXT,"+
-            "col3 TEXT,"+
-            "col4 TEXT,"+
-            "col5 TEXT)"
+            "CREATE TABLE fivecolumns(col1 TEXT PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
         );
     }
 }
