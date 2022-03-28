@@ -14,8 +14,7 @@ logging.basicConfig(
 
 class JavaBenchmarkFacade(BenchmarkFacade):
 
-    @classmethod
-    def compile_java_benchmarks(cls):
+    def compile_java_benchmarks(self):
         '''
         Compile the benchmarks with maven
         :return: success of compilation
@@ -24,7 +23,7 @@ class JavaBenchmarkFacade(BenchmarkFacade):
         try:
             ret = subprocess.run(
                 'mvn package',
-                cwd=cls.args.java_dir,
+                cwd=self.args.java_dir,
                 shell=True,
                 capture_output=True,
             )
@@ -42,7 +41,7 @@ class JavaBenchmarkFacade(BenchmarkFacade):
         else:
             self.compile_success = True
         jpype.startJVM(classpath=[
-            f'{self.java_benchmarks}/target/'
+            f'{self.args.java_dir}/target/'
             'java_benchmarks-1.0-jar-with-dependencies.jar',
         ])
 
