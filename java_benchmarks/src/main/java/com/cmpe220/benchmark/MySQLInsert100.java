@@ -14,7 +14,7 @@ public class MySQLInsert100 extends AbstractBenchmark {
     private Statement stmt;
 
     public MySQLInsert100() {
-        category = "Read";
+        category = "mysql";
         description = "This is an example";
     }
 

@@ -11,7 +11,7 @@ public class CassandraInsert100 extends AbstractBenchmark {
     private CqlSession session;
 
     public CassandraInsert100() {
-        category = "Read";
+        category = "cassandra";
         description = "This is an example";
     }
 

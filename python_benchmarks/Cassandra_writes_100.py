@@ -13,7 +13,7 @@ from cassandra.cluster import Cluster
 class Cassandra_writes_100(AbstractBenchmark):
 
     def __init__(self):
-        self.category = 'Read'
+        self.category = 'cassandra'
         self.description = 'This is an example'
 
     def setupQuery(self):

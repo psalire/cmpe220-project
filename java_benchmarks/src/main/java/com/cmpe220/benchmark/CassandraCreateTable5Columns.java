@@ -11,7 +11,7 @@ public class CassandraCreateTable5Columns extends AbstractBenchmark {
     private CqlSession session;
 
     public CassandraCreateTable5Columns() {
-        category = "Read";
+        category = "cassandra";
         description = "This is an example";
     }
 

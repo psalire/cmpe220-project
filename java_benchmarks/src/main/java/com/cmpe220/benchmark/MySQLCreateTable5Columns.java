@@ -14,7 +14,7 @@ public class MySQLCreateTable5Columns extends AbstractBenchmark {
     private Statement stmt;
 
     public MySQLCreateTable5Columns() {
-        category = "Read";
+        category = "mysql";
         description = "This is an example";
     }
 

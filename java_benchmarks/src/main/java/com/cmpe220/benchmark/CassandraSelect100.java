@@ -11,7 +11,7 @@ public class CassandraSelect100 extends AbstractBenchmark {
     private CqlSession session;
 
     public CassandraSelect100() {
-        category = "Read";
+        category = "cassandra";
         description = "This is an example";
     }
 

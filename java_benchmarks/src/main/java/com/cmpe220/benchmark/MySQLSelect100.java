@@ -14,7 +14,7 @@ public class MySQLSelect100 extends AbstractBenchmark {
     private Statement stmt;
 
     public MySQLSelect100() {
-        category = "Read";
+        category = "mysql";
         description = "This is an example";
     }
 

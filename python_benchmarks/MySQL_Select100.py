@@ -14,7 +14,7 @@ import mysql.connector
 class MySQL_Select100(AbstractBenchmark):
 
     def __init__(self):
-        self.category = 'Read'
+        self.category = 'mysql'
         self.description = 'This is an example'
 
     def setupQuery(self):
