@@ -25,5 +25,7 @@ class PythonBenchmarkFacade(BenchmarkFacade):
                 import_module(f'{self.args.python_dir}.{module_name}'),
                 module_name,
             )()
-            results[module_name] = self.run_benchmark(instance, module_name)
+            result = self.run_benchmark(instance, module_name)
+            if result is not None:
+                results[module_name] = result
         return results

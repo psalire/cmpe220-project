@@ -21,6 +21,9 @@ class BenchmarkFacade(ABC):
         :return: results
         :rtype: dict
         '''
+        category = str(instance.getCategory())
+        if category.lower() != self.args.db:
+            return None
         logging.info(f'Running benchmark "{name}"...')
         results = []
         for i in range(self.args.n):
@@ -35,7 +38,7 @@ class BenchmarkFacade(ABC):
                     'success': False,
                 }
         return {
-            'category': str(instance.getCategory()),
+            'category': category,
             'time': {
                 'mean': mean(results),
                 'min': min(results),

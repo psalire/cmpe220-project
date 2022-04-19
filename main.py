@@ -3,7 +3,7 @@ from JavaBenchmarkFacade import JavaBenchmarkFacade
 from PythonBenchmarkFacade import PythonBenchmarkFacade
 import logging
 import argparse
-# import json
+import json
 
 
 logging.basicConfig(
@@ -20,6 +20,14 @@ parser.add_argument(
     type=int,
     default=10,
     help='Number of times to run each benchmark',
+)
+parser.add_argument(
+    '-o',
+    '--output',
+    type=str,
+    default='results',
+    help='Ouput file name, saved as {output}_{db}.json.'
+         'Overwrites any previous files.'
 )
 parser.add_argument(
     '--db',
@@ -72,9 +80,21 @@ def main():
     # Run all benchmarks
     for name in benchmark_instances:
         logging.info(f'Running {name} benchmarks...')
-        results[name] = benchmark_instances[name].run()
+        result = benchmark_instances[name].run()
+        if result:
+            results[name] = result
 
-    pprint(results)
+    # pprint(results)
+
+    # Write results dict to JSON
+    try:
+        filename = f'{args.output}_{args.db}.json'
+        with open(filename, 'w') as file:
+            json.dump(results, file)
+        logging.info(f'Wrote output to {filename}')
+    except Exception as e:
+        logging.error('Write output to JSON file failed.')
+        logging.exception(e)
 
 
 if __name__ == '__main__':

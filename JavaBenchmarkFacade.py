@@ -61,9 +61,11 @@ class JavaBenchmarkFacade(BenchmarkFacade):
         results = {}
         for bm in java_benchmarks_list:
             instance = getattr(java_benchmarks_object, bm)()
-            results[bm] = self.run_benchmark(instance, bm)
+            result = self.run_benchmark(instance, bm)
+            if result is not None:
+                results[bm] = result
 
-        # TODO: fix shutdownJVM() hangs
+        # TODO: is shutdownJVM() necessary?
         # try:
         #     logging.info('Shutting down JVM...')
         #     jpype.shutdownJVM()
