@@ -11,7 +11,7 @@ public class Example1 extends AbstractBenchmark {
     private CqlSession session;
 
     public Example1() {
-        category = "Read";
+        category = "cassandra";
         description = "This is an example";
     }
 
