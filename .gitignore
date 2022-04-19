@@ -1,2 +1,3 @@
 java_benchmarks/target
 *.pyc
+*.json
