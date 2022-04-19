@@ -32,6 +32,13 @@ parser.add_argument(
     help='Number of times to run each benchmark',
 )
 parser.add_argument(
+    '--db',
+    required=True,
+    type=str,
+    help='Which DBMS to benchmark',
+    choices=['cassandra', 'mysql'],
+)
+parser.add_argument(
     '--no-java-compile',
     action='store_true',
     default=False,
