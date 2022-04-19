@@ -9,7 +9,7 @@ abstract public class AbstractBenchmark {
     * Operations before the actual query
     * e.g. connection, initializations, etc.
     */
-    protected void setupQuery() {
+    protected void setupQuery() throws Exception {
 
     }
 
@@ -17,7 +17,7 @@ abstract public class AbstractBenchmark {
     * Operations after the query
     * e.g. cleanup, shutdown, etc.
     */
-    protected void endQuery() {
+    protected void endQuery() throws Exception {
 
     }
 
@@ -25,12 +25,12 @@ abstract public class AbstractBenchmark {
     * Run the query to benchmark
     * Make sure that the query is synchronous!
     */
-    abstract protected void runQuery();
+    abstract protected void runQuery() throws Exception;
 
     /**
     * @return milliseconds that the query took
     */
-    public long benchmark() {
+    public long benchmark() throws Exception {
         setupQuery();
 
         long startTime = System.currentTimeMillis();

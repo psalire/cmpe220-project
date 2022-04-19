@@ -18,57 +18,42 @@ public class MySQLInsert100 extends AbstractBenchmark {
         description = "This is an example";
     }
 
-    public void setupQuery() {
+    public void setupQuery() throws SQLException {
         System.out.println("Connecting to MySQL...");
-        try {
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost/",
-                "root",
-                "root-password123"
-            );
-            stmt = conn.createStatement();
+        conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost/",
+            "root",
+            "root-password123"
+        );
+        stmt = conn.createStatement();
 
-            stmt.executeUpdate("CREATE DATABASE cmpe220db");
-            conn.close();
-            // stmt.executeUpdate("USE cmpe220db");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost/cmpe220db",
-                "root",
-                "root-password123"
-            );
-            stmt = conn.createStatement();
+        stmt.executeUpdate("CREATE DATABASE cmpe220db");
+        conn.close();
+        // stmt.executeUpdate("USE cmpe220db");
+        conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost/cmpe220db",
+            "root",
+            "root-password123"
+        );
+        stmt = conn.createStatement();
 
-            stmt.executeUpdate(
-                "CREATE TABLE fivecolumns(col1 VARCHAR(14) PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
-            );
-        }
-        catch (SQLException e) {
-            System.out.println(e.toString());
-        }
+        stmt.executeUpdate(
+            "CREATE TABLE fivecolumns(col1 VARCHAR(14) PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
+        );
     }
 
-    public void endQuery() {
+    public void endQuery() throws SQLException {
         System.out.println("Closing...");
-        try {
-            stmt.executeUpdate("DROP DATABASE cmpe220db");
-            conn.close();
-        }
-        catch (SQLException e) {
-            System.out.println(e.toString());
-        }
+        stmt.executeUpdate("DROP DATABASE cmpe220db");
+        conn.close();
     }
 
-    public void runQuery() {
-        try {
-            for (int i=0; i<100; i++) {
-                stmt.executeUpdate(
-                    "INSERT INTO fivecolumns(col1, col2, col3, col4, col5) "+
-                    "VALUES ('Rutuja_"+i+"', 'Palatkar', 'SJSU', 'Student', 'ID')"
-                );
-            }
-        }
-        catch (SQLException e) {
-            System.out.println(e);
+    public void runQuery() throws SQLException {
+        for (int i=0; i<100; i++) {
+            stmt.executeUpdate(
+                "INSERT INTO fivecolumns(col1, col2, col3, col4, col5) "+
+                "VALUES ('Rutuja_"+i+"', 'Palatkar', 'SJSU', 'Student', 'ID')"
+            );
         }
     }
 }

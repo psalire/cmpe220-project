@@ -18,50 +18,35 @@ public class MySQLCreateTable5Columns extends AbstractBenchmark {
         description = "This is an example";
     }
 
-    public void setupQuery() {
+    public void setupQuery() throws SQLException {
         System.out.println("Connecting to MySQL...");
-        try {
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost/",
-                "root",
-                "root-password123"
-            );
-            stmt = conn.createStatement();
+        conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost/",
+            "root",
+            "root-password123"
+        );
+        stmt = conn.createStatement();
 
-            stmt.executeUpdate("CREATE DATABASE cmpe220db");
-            conn.close();
-            // stmt.executeUpdate("USE cmpe220db");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost/cmpe220db",
-                "root",
-                "root-password123"
-            );
-            stmt = conn.createStatement();
-        }
-        catch (SQLException e) {
-            System.out.println(e.toString());
-        }
+        stmt.executeUpdate("CREATE DATABASE cmpe220db");
+        conn.close();
+        // stmt.executeUpdate("USE cmpe220db");
+        conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost/cmpe220db",
+            "root",
+            "root-password123"
+        );
+        stmt = conn.createStatement();
     }
 
-    public void endQuery() {
+    public void endQuery() throws SQLException {
         System.out.println("Closing...");
-        try {
-            stmt.executeUpdate("DROP DATABASE cmpe220db");
-            conn.close();
-        }
-        catch (SQLException e) {
-            System.out.println(e.toString());
-        }
+        stmt.executeUpdate("DROP DATABASE cmpe220db");
+        conn.close();
     }
 
-    public void runQuery() {
-        try {
-            stmt.executeUpdate(
-                "CREATE TABLE fivecolumns(col1 VARCHAR(14) PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
-            );
-        }
-        catch (SQLException e) {
-            System.out.println(e);
-        }
+    public void runQuery() throws SQLException {
+        stmt.executeUpdate(
+            "CREATE TABLE fivecolumns(col1 VARCHAR(14) PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
+        );
     }
 }

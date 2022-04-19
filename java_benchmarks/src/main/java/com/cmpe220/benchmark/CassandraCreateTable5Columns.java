@@ -19,10 +19,6 @@ public class CassandraCreateTable5Columns extends AbstractBenchmark {
         System.out.println("Connecting to cassandra...");
         session = CqlSession.builder().build();
 
-        try {
-            session.execute("DROP KEYSPACE cmpe220KS");
-        }
-        catch (Exception e) {}
         session.execute(
             "CREATE KEYSPACE cmpe220KS "+
             "WITH replication="+
