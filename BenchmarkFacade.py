@@ -34,6 +34,10 @@ class BenchmarkFacade(ABC):
             except Exception as e:
                 logging.error(f'Benchmark "{name}" failed!')
                 logging.exception(e)
+                try:
+                    instance.endQuery()
+                except Exception as e:
+                    logging.exception(e)
                 return {
                     'success': False,
                 }
