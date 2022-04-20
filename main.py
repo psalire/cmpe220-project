@@ -34,7 +34,7 @@ parser.add_argument(
     required=True,
     type=str,
     help='Which DBMS to benchmark',
-    choices=['cassandra', 'mysql'],
+    choices=['cassandra', 'mysql', 'mongo'],
 )
 parser.add_argument(
     '--no-java-compile',
