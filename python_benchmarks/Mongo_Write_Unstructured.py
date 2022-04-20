@@ -24,7 +24,7 @@ class Mongo_Write_Unstructured(AbstractBenchmark):
         self.col = self.db['mycol']
         with open('data/cat.JPG', 'rb') as img:
             img_data = Binary(img.read())
-            self.data = {'cat': self.img_data}
+            self.data = {'cat': img_data}
 
     def endQuery(self):
         self.col.drop()
