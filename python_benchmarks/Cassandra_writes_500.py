@@ -10,7 +10,7 @@ from python_benchmarks.AbstractBenchmark import AbstractBenchmark
 from cassandra.cluster import Cluster
 
 
-class Cassandra_writes_500trisha(AbstractBenchmark):
+class Cassandra_writes_500(AbstractBenchmark):
 
     def __init__(self):
         self.category = 'cassandra'
@@ -37,4 +37,4 @@ class Cassandra_writes_500trisha(AbstractBenchmark):
         for i in range(0,500):
             self.session.execute(
                 "INSERT INTO fivecolumns(col1, col2, col3, col4, col5) "
-                "VALUES ('015219646', 'Trishala', '015219646', 'Trishala', '015219646')")
+                "VALUES ('Rutuja', 'Palatkar', 'SJSU', 'Student', 'ID')")
