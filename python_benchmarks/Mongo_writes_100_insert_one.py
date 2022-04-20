@@ -31,6 +31,7 @@ class Mongo_writes_100_insert_one(AbstractBenchmark):
 
     def endQuery(self):
         self.col.drop()
+        self.client.close()
 
     def runQuery(self):
         for i in range(100):

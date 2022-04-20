@@ -31,6 +31,7 @@ class Mongo_writes_100_insert_many(AbstractBenchmark):
 
     def endQuery(self):
         self.col.drop()
+        self.client.close()
 
     def runQuery(self):
         self.col.insert_many(self.data)

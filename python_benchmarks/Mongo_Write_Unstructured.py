@@ -23,10 +23,12 @@ class Mongo_Write_Unstructured(AbstractBenchmark):
         self.db = self.client['mydb']
         self.col = self.db['mycol']
         with open('data/cat.JPG', 'rb') as img:
-            self.img_data = Binary(img.read())
+            img_data = Binary(img.read())
+            self.data = {'cat': self.img_data}
 
     def endQuery(self):
         self.col.drop()
+        self.client.close()
 
     def runQuery(self):
-        self.col.insert_one({'cat': self.img_data})
+        self.col.insert_one(self.data)
