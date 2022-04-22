@@ -1,20 +1,12 @@
-import jpype
-# import jpype.imports
-from jpype.types import *
-from importlib import import_module
-from os import listdir
-from abc import ABC, abstractmethod
-from statistics import mean
 from pprint import pprint
-import subprocess
+from JavaBenchmarkFacade import JavaBenchmarkFacade
+from PythonBenchmarkFacade import PythonBenchmarkFacade
 import logging
 import argparse
-import sys
-# import json
-
-JAVA_BENCHMARKS_DIR = 'java_benchmarks'
-BENCHMARK_JAR_NAME = 'java_benchmarks-1.0-jar-with-dependencies.jar'
-PYTHON_BENCHMARKS_DIR = 'python_benchmarks'
+import json
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 logging.basicConfig(
     format='[%(asctime)s] %(message)s',
@@ -30,6 +22,21 @@ parser.add_argument(
     type=int,
     default=10,
     help='Number of times to run each benchmark',
+)
+parser.add_argument(
+    '-o',
+    '--output',
+    type=str,
+    default='results',
+    help='Ouput file name, saved as {output}_{db}.json.'
+         'Overwrites any previous files.'
+)
+parser.add_argument(
+    '--db',
+    required=True,
+    type=str,
+    help='Which DBMS to benchmark',
+    choices=['cassandra', 'mysql', 'mongo'],
 )
 parser.add_argument(
     '--no-java-compile',
@@ -49,131 +56,74 @@ parser.add_argument(
     default=False,
     help='Skip all Python benchmarks',
 )
+parser.add_argument(
+    '--java-dir',
+    type=str,
+    default='java_benchmarks',
+    help='Which directory Java benchmarks are located',
+)
+parser.add_argument(
+    '--python-dir',
+    type=str,
+    default='python_benchmarks',
+    help='Which directory Python benchmarks are located',
+)
 
+def plotResults(title, means, lang, db):
+    fig, ax = plt.subplots()
+    ax.bar(title, means)
 
-class BenchmarkFacade(ABC):
+    for s in ['top', 'bottom', 'left', 'right']:
+        ax.spines[s].set_visible(False)
 
-    def __init__(self, args):
-        self.n = args.n
+    ax.xaxis.set_ticks_position('none')
+    ax.yaxis.set_ticks_position('none')
 
-    def run_benchmark(self, instance, name):
-        '''
-        Run a benchmark with an instance
-        :return: results
-        :rtype: dict
-        '''
-        logging.info(f'Running benchmark "{name}"...')
-        results = []
-        for i in range(self.n):
-            try:
-                t = instance.benchmark()
-                logging.info(f'i={i}, Time: {t}ms')
-                results.append(float(t))
-            except Exception as e:
-                logging.error(f'Benchmark "{name}" failed!')
-                logging.exception(e)
-                return {
-                    'success': False,
-                }
-        return {
-            'category': str(instance.getCategory()),
-            'time': {
-                'mean': mean(results),
-                'min': min(results),
-                'max': max(results),
-            },
-            'success': True,
-        }
+    ax.grid(visible = True, color ='grey',
+        linestyle ='-.', linewidth = 0.5,
+        alpha = 0.2)
 
-    @abstractmethod
-    def run(self):
-        pass
+    for i in ax.patches:
+        plt.text(i.get_width()+0.2, i.get_y()+0.5,
+                str(round((i.get_width()), 2)),
+                fontsize = 10, fontweight ='bold',
+                color ='grey')
 
+    ax.set_title(f'{db} {lang} Benchmark',
+             loc ='center',)
+             
 
-class JavaBenchmarkFacade(BenchmarkFacade):
+    plt.xlabel('Operation', fontweight ='bold')
+    plt.ylabel('Time(ms)', fontweight ='bold')
+    plt.show()
 
-    @staticmethod
-    def compile_java_benchmarks():
-        '''
-        Compile the benchmarks with maven
-        :return: success of compilation
-        '''
-        logging.info('Compiling Java benchmarks...')
-        try:
-            ret = subprocess.run(
-                'mvn package',
-                cwd=JAVA_BENCHMARKS_DIR,
-                shell=True,
-                capture_output=True,
-            )
-            ret.check_returncode()
-            logging.debug(str(ret.stdout))
-            return True
-        except subprocess.CalledProcessError:
-            logging.error(str(ret.stderr))
-            return False
+def result_display(results):
+    title_op = []
+    mean_op = []
+    language = ['python', 'java', 'nodejs']
+    database = ['mysql', 'cassandra', 'mongodb']
 
-    def __init__(self, args):
-        super().__init__(args)
-        if args.no_java_compile is False:
-            self.compile_success = self.compile_java_benchmarks()
-        else:
-            self.compile_success = True
-        jpype.startJVM(classpath=[
-            f'{JAVA_BENCHMARKS_DIR}/target/{BENCHMARK_JAR_NAME}',
-        ])
+    for lang in language:
+        if lang not in results:
+            continue
 
-    def run(self):
-        '''
-        Load and run java benchmarks from
-        package com.cmpe220.benchmark in the jar file
-        :return: results
-        :rtype: dict
-        '''
-        if self.compile_success is False:
-            logging.info('Java compiliation failed, skipping benchmarks...')
-            return {}
-        java_benchmarks_object = jpype.JPackage('com.cmpe220.benchmark')
-        java_benchmarks_list = list(dir(java_benchmarks_object))
-        java_benchmarks_list.remove('AbstractBenchmark')
-        results = {}
-        for bm in java_benchmarks_list:
-            instance = getattr(java_benchmarks_object, bm)()
-            results[bm] = self.run_benchmark(instance, bm)
+        data = results[lang]
+        for db in database:            
+            for op in data.keys():
+                if not data[op]['success']:
+                    continue
 
-        # TODO: fix shutdownJVM() hangs
-        # try:
-        #     logging.info('Shutting down JVM...')
-        #     jpype.shutdownJVM()
-        # except Exception:
-        #     logging.error('Failed to shutdown JVM')
+                if data[op]['category'] != db:
+                    continue
 
-        return results
+                title_op.append(op)
+                mean_op.append(data[op]['time']['mean'])
 
+            if len(title_op) > 0:
+                plotResults(title_op, mean_op, lang, db)
 
-class PythonBenchmarkFacade(BenchmarkFacade):
-
-    def run(self):
-        '''
-        Load and run python benchmarks
-        :return: results
-        :rtype: dict
-        '''
-        python_benchmarks_list = listdir(PYTHON_BENCHMARKS_DIR)
-        python_benchmarks_list.remove('AbstractBenchmark.py')
-        python_benchmarks_list = list(filter(
-            lambda x: x.endswith('.py'),
-            python_benchmarks_list
-        ))
-        results = {}
-        for bm in python_benchmarks_list:
-            module_name = bm[:-3]  # rm ".py" from end of filename
-            instance = getattr(
-                import_module(f'{PYTHON_BENCHMARKS_DIR}.{module_name}'),
-                module_name,
-            )()
-            results[module_name] = self.run_benchmark(instance, module_name)
-        return results
+            title_op.clear()
+            mean_op.clear()
 
 
 def main():
@@ -188,9 +138,28 @@ def main():
     # Run all benchmarks
     for name in benchmark_instances:
         logging.info(f'Running {name} benchmarks...')
-        results[name] = benchmark_instances[name].run()
+        result = benchmark_instances[name].run()
+        if result:
+            results[name] = result
 
     pprint(results)
+
+    result_display(results)
+    # plt.plot(results)
+
+    # plt.ylabel('y numbers')
+    # plt.xlabel('x numbers')
+    # plt.show()
+
+    # Write results dict to JSON
+    try:
+        filename = f'{args.output}_{args.db}.json'
+        with open(filename, 'w') as file:
+            json.dump(results, file)
+        logging.info(f'Wrote output to {filename}')
+    except Exception as e:
+        logging.error('Write output to JSON file failed.')
+        logging.exception(e)
 
 
 if __name__ == '__main__':

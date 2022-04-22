@@ -9,7 +9,7 @@ class AbstractBenchmark(ABC):
         self.category = ''
         self.description = ''
 
-    def startQuery(self):
+    def setupQuery(self):
         '''
         Operations before the actual query
         e.g. connection, initializations, etc.

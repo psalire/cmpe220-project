@@ -8,12 +8,12 @@ import java.sql.SQLException;
 /**
 * REQUIRED: have MySQL already running
 */
-public class MySQLCreateTable5Columns extends AbstractBenchmark {
+public class MySQLSelect100 extends AbstractBenchmark {
 
     private Connection conn;
     private Statement stmt;
 
-    public MySQLCreateTable5Columns() {
+    public MySQLSelect100() {
         category = "mysql";
         description = "This is an example";
     }
@@ -36,6 +36,16 @@ public class MySQLCreateTable5Columns extends AbstractBenchmark {
             "root-password123"
         );
         stmt = conn.createStatement();
+
+        stmt.executeUpdate(
+            "CREATE TABLE fivecolumns(col1 VARCHAR(14) PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
+        );
+        for (int i=0; i<100; i++) {
+            stmt.executeUpdate(
+                "INSERT INTO fivecolumns(col1, col2, col3, col4, col5) "+
+                "VALUES ('Rutuja_"+i+"', 'Palatkar', 'SJSU', 'Student', 'ID')"
+            );
+        }
     }
 
     public void endQuery() throws SQLException {
@@ -45,8 +55,8 @@ public class MySQLCreateTable5Columns extends AbstractBenchmark {
     }
 
     public void runQuery() throws SQLException {
-        stmt.executeUpdate(
-            "CREATE TABLE fivecolumns(col1 VARCHAR(14) PRIMARY KEY,col2 TEXT,col3 TEXT,col4 TEXT,col5 TEXT)"
-        );
+        for (int i=0; i<100; i++) {
+            stmt.executeQuery("SELECT * FROM fivecolumns");
+        }
     }
 }
