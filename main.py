@@ -4,7 +4,9 @@ from PythonBenchmarkFacade import PythonBenchmarkFacade
 import logging
 import argparse
 import json
-
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 logging.basicConfig(
     format='[%(asctime)s] %(message)s',
@@ -67,6 +69,62 @@ parser.add_argument(
     help='Which directory Python benchmarks are located',
 )
 
+def plotResults(title, means, lang, db):
+    fig, ax = plt.subplots()
+    ax.bar(title, means)
+
+    for s in ['top', 'bottom', 'left', 'right']:
+        ax.spines[s].set_visible(False)
+
+    ax.xaxis.set_ticks_position('none')
+    ax.yaxis.set_ticks_position('none')
+
+    ax.grid(visible = True, color ='grey',
+        linestyle ='-.', linewidth = 0.5,
+        alpha = 0.2)
+
+    for i in ax.patches:
+        plt.text(i.get_width()+0.2, i.get_y()+0.5,
+                str(round((i.get_width()), 2)),
+                fontsize = 10, fontweight ='bold',
+                color ='grey')
+
+    ax.set_title(f'{db} {lang} Benchmark',
+             loc ='center',)
+
+
+    plt.xlabel('Operation', fontweight ='bold')
+    plt.ylabel('Time(ms)', fontweight ='bold')
+    plt.show()
+
+def result_display(results):
+    title_op = []
+    mean_op = []
+    language = ['python', 'java', 'nodejs']
+    database = ['mysql', 'cassandra', 'mongodb']
+
+    for lang in language:
+        if lang not in results:
+            continue
+
+        data = results[lang]
+        for db in database:
+            for op in data.keys():
+                if not data[op]['success']:
+                    continue
+
+                if data[op]['category'] != db:
+                    continue
+
+                title_op.append(op)
+                mean_op.append(data[op]['time']['mean'])
+
+            if len(title_op) > 0:
+                plotResults(title_op, mean_op, lang, db)
+
+            title_op.clear()
+            mean_op.clear()
+
 
 def main():
     args = parser.parse_args()
@@ -84,7 +142,14 @@ def main():
         if result:
             results[name] = result
 
-    # pprint(results)
+    pprint(results)
+
+    result_display(results)
+    # plt.plot(results)
+
+    # plt.ylabel('y numbers')
+    # plt.xlabel('x numbers')
+    # plt.show()
 
     # Write results dict to JSON
     try:
