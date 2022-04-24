@@ -11,7 +11,7 @@ from bson.binary import Binary
 import pymongo
 
 
-class Mongo_Write_Unstructured(AbstractBenchmark):
+class MongoInsertUnstructured(AbstractBenchmark):
 
     def __init__(self):
         self.category = 'mongo'
