@@ -24,7 +24,7 @@ class DataPlotter:
                     loc ='center',)
             ax.set_xticklabels(title,rotation=90)
 
-            plt.xlabel('Operation', fontweight ='bold')
+            plt.xlabel('Benchmark', fontweight ='bold')
             plt.ylabel('Mean Time(ms)', fontweight ='bold')
             plt.savefig(fname, bbox_inches='tight')
             logging.info(f'Created plot {fname}')
@@ -69,7 +69,7 @@ class DataPlotter:
             ax = df.plot.bar()
             ax.set_xlabel('Benchmark')
             ax.set_ylabel('Time (ms)')
-            ax.set_title(f'{self.db} Benchmarks')
+            ax.set_title(f'{self.db} {lang.capitalize()} Benchmarks')
             plt.savefig(fname, bbox_inches='tight')
             logging.info(f'Created plot {fname}')
 
