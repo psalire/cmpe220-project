@@ -95,13 +95,14 @@ def plotResults(title, means, lang, db):
 
     plt.xlabel('Operation', fontweight ='bold')
     plt.ylabel('Time(ms)', fontweight ='bold')
-    plt.show()
+    plt.savefig(f'{title}.png')
+    # plt.show()
 
 def result_display(results):
     title_op = []
     mean_op = []
     language = ['python', 'java', 'nodejs']
-    database = ['mysql', 'cassandra', 'mongodb']
+    database = ['mysql', 'cassandra', 'mongo']
 
     for lang in language:
         if lang not in results:
@@ -145,11 +146,6 @@ def main():
     pprint(results)
 
     result_display(results)
-    # plt.plot(results)
-
-    # plt.ylabel('y numbers')
-    # plt.xlabel('x numbers')
-    # plt.show()
 
     # Write results dict to JSON
     try:
