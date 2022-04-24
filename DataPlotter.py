@@ -47,7 +47,7 @@ class DataPlotter:
 
             ax = df.plot.bar()
             ax.set_xlabel('Benchmark')
-            ax.set_ylabel('Time (ms)')
+            ax.set_ylabel('Mean time (ms)')
             ax.set_title(f'{self.db} Benchmarks')
             plt.savefig(fname, bbox_inches='tight')
             logging.info(f'Created plot {fname}')
