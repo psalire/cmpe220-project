@@ -1,10 +1,10 @@
 from pprint import pprint
 from JavaBenchmarkFacade import JavaBenchmarkFacade
 from PythonBenchmarkFacade import PythonBenchmarkFacade
+from DataPlotter import DataPlotter
 import logging
 import argparse
 import json
-import matplotlib.pyplot as plt
 
 logging.basicConfig(
     format='[%(asctime)s] %(message)s',
@@ -67,39 +67,6 @@ parser.add_argument(
     help='Which directory Python benchmarks are located',
 )
 
-def plotResults(title, means, lang, db):
-    fig, ax = plt.subplots()
-    ax.bar(title, means)
-
-    ax.set_title(f'{lang.capitalize()} Benchmark',
-             loc ='center',)
-    ax.set_xticklabels(title,rotation=90)
-
-    plt.xlabel('Operation', fontweight ='bold')
-    plt.ylabel('Time(ms)', fontweight ='bold')
-    plt.savefig(f'{lang}_{db}.png')
-    plt.show()
-
-def result_display(results):
-    title_op = []
-    mean_op = []
-
-    for language in results.keys():
-        for benchmark in results[language]:
-            benchmark_data = results[language][benchmark]
-
-            if benchmark_data['success'] is False:
-                continue
-
-            title_op.append(benchmark)
-            mean_op.append(benchmark_data['time']['mean'])
-
-        if len(title_op) > 0:
-            plotResults(title_op, mean_op, language, benchmark)
-
-        title_op.clear()
-        mean_op.clear()
-
 
 def main():
     args = parser.parse_args()
@@ -119,8 +86,6 @@ def main():
 
     pprint(results)
 
-    result_display(results)
-
     # Write results dict to JSON
     try:
         filename = f'{args.output}_{args.db}.json'
@@ -130,6 +95,8 @@ def main():
     except Exception as e:
         logging.error('Write output to JSON file failed.')
         logging.exception(e)
+
+    DataPlotter(results, args.db).result_display()
 
 
 if __name__ == '__main__':

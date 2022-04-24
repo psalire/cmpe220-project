@@ -3,3 +3,4 @@ __pycache__
 java_benchmarks/target
 *.pyc
 *.json
+*.png
