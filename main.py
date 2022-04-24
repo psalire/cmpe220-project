@@ -71,58 +71,34 @@ def plotResults(title, means, lang, db):
     fig, ax = plt.subplots()
     ax.bar(title, means)
 
-    for s in ['top', 'bottom', 'left', 'right']:
-        ax.spines[s].set_visible(False)
-
-    ax.xaxis.set_ticks_position('none')
-    ax.yaxis.set_ticks_position('none')
-
-    ax.grid(visible = True, color ='grey',
-        linestyle ='-.', linewidth = 0.5,
-        alpha = 0.2)
-
-    for i in ax.patches:
-        plt.text(i.get_width()+0.2, i.get_y()+0.5,
-                str(round((i.get_width()), 2)),
-                fontsize = 10, fontweight ='bold',
-                color ='grey')
-
-    ax.set_title(f'{db} {lang} Benchmark',
+    ax.set_title(f'{lang.capitalize()} Benchmark',
              loc ='center',)
-
+    ax.set_xticklabels(title,rotation=90)
 
     plt.xlabel('Operation', fontweight ='bold')
     plt.ylabel('Time(ms)', fontweight ='bold')
     plt.savefig(f'{lang}_{db}.png')
-    # plt.show()
+    plt.show()
 
 def result_display(results):
     title_op = []
     mean_op = []
-    language = ['python', 'java', 'nodejs']
-    database = ['mysql', 'cassandra', 'mongo']
 
-    for lang in language:
-        if lang not in results:
-            continue
+    for language in results.keys():
+        for benchmark in results[language]:
+            benchmark_data = results[language][benchmark]
 
-        data = results[lang]
-        for db in database:
-            for op in data.keys():
-                if not data[op]['success']:
-                    continue
+            if benchmark_data['success'] is False:
+                continue
 
-                if data[op]['category'] != db:
-                    continue
+            title_op.append(benchmark)
+            mean_op.append(benchmark_data['time']['mean'])
 
-                title_op.append(op)
-                mean_op.append(data[op]['time']['mean'])
+        if len(title_op) > 0:
+            plotResults(title_op, mean_op, language, benchmark)
 
-            if len(title_op) > 0:
-                plotResults(title_op, mean_op, lang, db)
-
-            title_op.clear()
-            mean_op.clear()
+        title_op.clear()
+        mean_op.clear()
 
 
 def main():
