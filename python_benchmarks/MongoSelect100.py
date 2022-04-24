@@ -34,4 +34,5 @@ class MongoSelect100(AbstractBenchmark):
         self.client.close()
 
     def runQuery(self):
-        x = [y for y in self.col.find()]
+        for _ in range(100):
+            self.col.find()
