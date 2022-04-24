@@ -42,14 +42,18 @@ def plot_db_difference(
 ):
     df1_copy = df1.copy()
     for k in df1_drop_rows:
-        df1_copy.drop(k, inplace=True)
+        try:
+            df1_copy.drop(k, inplace=True)
+        except Exception as _: pass
     df1_copy.rename(
         index=df1_rename_rows,
         inplace=True,
     )
     df2_copy = df2.copy()
     for k in df2_drop_rows:
-        df2_copy.drop(k, inplace=True)
+        try:
+            df2_copy.drop(k, inplace=True)
+        except Exception as _: pass
     df2_copy.rename(
         index=df2_rename_rows,
         inplace=True,
@@ -120,25 +124,56 @@ for lang in langs:
         dfs['cassandra'][lang],
         [
             'MongoInsertUnstructured',
-            'MongoInsert100UnstructuredInsertOne'
+            'MongoInsert100UnstructuredInsertOne',
+            'MongoSelect100',
+            'MongoInsert100InsertOne',
+            'MongoInsertUnstructured',
         ],
         [
             'Example1',
             'CassandraCreateTable5Columns',
+            'CassandraSelect100',
+            'CassandraWriteUnstructured',
         ],
         {
             'MongoInsert100UnstructuredInsertMany': 'Insert100Unstructured',
-            'MongoInsertUnstructured': 'InsertUnstructured',
+            # 'MongoInsertUnstructured': 'InsertUnstructured',
             'MongoInsert100InsertMany': 'Insert100',
-            'MongoSelect100': 'Select100',
+            # 'MongoSelect100': 'Select100',
         },
         {
-            'CassandraWriteUnstructured100': 'Insert100Unstructured',
-            'CassandraWriteUnstructured': 'InsertUnstructured',
-            'CassandraInsert100': 'Insert100',
-            'CassandraSelect100': 'Select100',
+            'MySQLInsert100': 'Insert100',
+            'MySQLSelect100': 'Select100',
         },
         'Mongo-Cassandra',
         f'Mongo-Cassandra Difference ({lang.capitalize()})',
         f'mongo_cassandra_{lang}_difference.png',
+    )
+
+
+# Plot difference of mysql & cassandra
+for lang in langs:
+    plot_db_difference(
+        dfs['mysql'][lang],
+        dfs['cassandra'][lang],
+        [
+        ],
+        [
+            'Example1',
+            'CassandraWriteUnstructured100',
+            'CassandraWriteUnstructured',
+        ],
+        {
+            'MySQLCreateTable5Columns': 'CreateTable5Columns',
+            'MySQLInsert100': 'Insert100',
+            'MySQLSelect100': 'Select100',
+        },
+        {
+            'CassandraCreateTable5Columns': 'CreateTable5Columns',
+            'CassandraInsert100': 'Insert100',
+            'CassandraSelect100': 'Select100',
+        },
+        'MySQL-Cassandra',
+        f'MySQL-Cassandra Difference ({lang.capitalize()})',
+        f'mysql_cassandra_{lang}_difference.png',
     )
