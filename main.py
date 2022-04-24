@@ -96,6 +96,7 @@ def main():
         logging.error('Write output to JSON file failed.')
         logging.exception(e)
 
+    # Generate plots
     DataPlotter(results, args.db).result_display()
 
 

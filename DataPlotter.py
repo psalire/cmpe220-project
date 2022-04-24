@@ -1,4 +1,11 @@
 import matplotlib.pyplot as plt
+import logging
+
+logging.basicConfig(
+    format='[%(asctime)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.INFO,
+)
 
 class DataPlotter:
 
@@ -6,18 +13,24 @@ class DataPlotter:
         self.data = data
         self.db = db
 
-    def plotResults(self, title, means, lang, db):
-        fig, ax = plt.subplots()
-        ax.bar(title, means)
+    def plot_means(self, title, means, lang, db):
+        try:
+            fig, ax = plt.subplots()
+            ax.bar(title, means)
 
-        ax.set_title(f'{lang.capitalize()} Benchmark',
-                loc ='center',)
-        ax.set_xticklabels(title,rotation=90)
+            ax.set_title(f'{lang.capitalize()} Benchmark',
+                    loc ='center',)
+            ax.set_xticklabels(title,rotation=90)
 
-        plt.xlabel('Operation', fontweight ='bold')
-        plt.ylabel('Time(ms)', fontweight ='bold')
-        plt.savefig(f'{lang}_{db}.png', bbox_inches='tight')
-        # plt.show()
+            plt.xlabel('Operation', fontweight ='bold')
+            plt.ylabel('Mean Time(ms)', fontweight ='bold')
+            fname = f'{lang}_{db}_MEANS.png'
+            plt.savefig(fname, bbox_inches='tight')
+            logging.info(f'Created plot {fname}')
+            # plt.show()
+        except Exception as e:
+            logging.error('Create plot PNG failed.')
+            logging.exception(e)
 
 
     def result_display(self):
@@ -35,7 +48,7 @@ class DataPlotter:
                 mean_op.append(benchmark_data['time']['mean'])
 
             if len(title_op) > 0:
-                self.plotResults(title_op, mean_op, language, self.db)
+                self.plot_means(title_op, mean_op, language, self.db)
 
             title_op.clear()
             mean_op.clear()
