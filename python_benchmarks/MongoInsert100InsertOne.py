@@ -10,7 +10,7 @@ from python_benchmarks.AbstractBenchmark import AbstractBenchmark
 import pymongo
 
 
-class Mongo_writes_100_insert_one(AbstractBenchmark):
+class MongoInsert100InsertOne(AbstractBenchmark):
 
     def __init__(self):
         self.category = 'mongo'

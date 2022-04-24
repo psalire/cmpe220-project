@@ -8,9 +8,10 @@ is required instead of "AbstractBenchmark")
 '''
 from python_benchmarks.AbstractBenchmark import AbstractBenchmark
 from cassandra.cluster import Cluster
+import base64
 
 
-class Cassandra_writes_100(AbstractBenchmark):
+class CassandraWriteUnstructured(AbstractBenchmark):
 
     def __init__(self):
         self.category = 'cassandra'
@@ -27,12 +28,16 @@ class Cassandra_writes_100(AbstractBenchmark):
             "{'class':'SimpleStrategy','replication_factor':1}"
         )
         self.session.execute("USE cmpe220KS")
-        self.session.execute('CREATE TABLE fivecolumns(col1 TEXT PRIMARY KEY, col2 TEXT, col3 TEXT, col4 TEXT, col5 TEXT)')
+        self.session.execute('CREATE TABLE tbl'
+                             '(col1 INT PRIMARY KEY, col2 MAP<TEXT, BLOB>)')
+        with open('data/cat.JPG', 'rb') as img:
+            self.img_blob = base64.b64encode(img.read()).decode('utf-8')
 
     def endQuery(self):
         print('Closing...')
         self.session.execute("DROP KEYSPACE cmpe220KS")
 
     def runQuery(self):
-        for i in range(0,100):
-            self.session.execute("INSERT INTO fivecolumns(col1, col2, col3, col4, col5) VALUES ('Rutuja', 'Palatkar', 'SJSU', 'Student', 'ID')")
+        self.session.execute(
+            "INSERT INTO tbl (col1, col2) VALUES(1, {'cat': textAsBlob('%s')})" % self.img_blob
+        )

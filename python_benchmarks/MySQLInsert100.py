@@ -11,7 +11,7 @@ from python_benchmarks.AbstractBenchmark import AbstractBenchmark
 import mysql.connector
 
 
-class MySQL_Insert100(AbstractBenchmark):
+class MySQLInsert100(AbstractBenchmark):
 
     def __init__(self):
         self.category = 'mysql'
