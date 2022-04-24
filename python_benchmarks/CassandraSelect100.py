@@ -10,7 +10,7 @@ from python_benchmarks.AbstractBenchmark import AbstractBenchmark
 from cassandra.cluster import Cluster
 
 
-class CassandraInsert100(AbstractBenchmark):
+class CassandraSelect100(AbstractBenchmark):
 
     def __init__(self):
         self.category = 'cassandra'
