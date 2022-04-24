@@ -5,6 +5,7 @@ from DataPlotter import DataPlotter
 import logging
 import argparse
 import json
+import sys
 
 logging.basicConfig(
     format='[%(asctime)s] %(message)s',
@@ -66,10 +67,24 @@ parser.add_argument(
     default='python_benchmarks',
     help='Which directory Python benchmarks are located',
 )
+parser.add_argument(
+    '--plot-only',
+    action='store_true',
+    default=False,
+    help='Open results_{db}.json, generate plots, and exit',
+)
 
 
 def main():
     args = parser.parse_args()
+
+    if args.plot_only:
+        filename = f'{args.output}_{args.db}.json'
+        with open(filename) as file:
+            results = json.load(file)
+        DataPlotter(results, args.db).result_display()
+        sys.exit()
+
     results = {}
     benchmark_instances = {}
     if args.no_java is False:
