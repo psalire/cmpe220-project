@@ -5,8 +5,6 @@ import logging
 import argparse
 import json
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 
 logging.basicConfig(
     format='[%(asctime)s] %(message)s',
