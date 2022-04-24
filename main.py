@@ -93,7 +93,7 @@ def plotResults(title, means, lang, db):
 
     plt.xlabel('Operation', fontweight ='bold')
     plt.ylabel('Time(ms)', fontweight ='bold')
-    plt.savefig(f'{title}.png')
+    plt.savefig(f'{lang}_{db}.png')
     # plt.show()
 
 def result_display(results):
