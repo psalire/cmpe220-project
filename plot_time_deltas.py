@@ -7,7 +7,7 @@ This script will plot the mean time deltas of each DB benchmark
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
-from itertools import permutations
+
 
 def format_dict(data):
     d = {'mean': {}}
@@ -31,6 +31,36 @@ def plot_difference(d1, d2, colname, title, fname):
         print(f'Failed to plot {fname}')
         print(e)
 
+def plot_db_difference(
+    df1,
+    df2,
+    df1_drop_rows,
+    df2_drop_rows,
+    df1_rename_rows,
+    df2_rename_rows,
+    colname, title, fname,
+):
+    df1_copy = df1.copy()
+    for k in df1_drop_rows:
+        df1_copy.drop(k, inplace=True)
+    df1_copy.rename(
+        index=df1_rename_rows,
+        inplace=True,
+    )
+    df2_copy = df2.copy()
+    for k in df2_drop_rows:
+        df2_copy.drop(k, inplace=True)
+    df2_copy.rename(
+        index=df2_rename_rows,
+        inplace=True,
+    )
+
+    plot_difference(
+        df1_copy,
+        df2_copy,
+        colname, title, fname
+    )
+
 with open('results_mongo.json') as f:
     mongo_data = json.load(f)
 with open('results_mysql.json') as f:
@@ -52,12 +82,63 @@ for db in dbs:
         dfs[db]['python'],
         dfs[db]['java'],
         'Python-Java',
-        f'{db.capitalize()} Python, Java Difference',
+        f'{db.capitalize()} Python-Java Difference',
         f'{db.capitalize()}_python_java_difference.png',
     )
 
-# for db1, db2 in permutations(dbs, 2):
-#     for lang in langs:
-#         plot_difference(
-            
-#         )
+# Plot difference of mongo & mysql
+for lang in langs:
+    plot_db_difference(
+        dfs['mongo'][lang],
+        dfs['mysql'][lang],
+        [
+            'MongoInsert100UnstructuredInsertMany',
+            'MongoInsert100InsertOne',
+            'MongoInsertUnstructured',
+            'MongoInsert100UnstructuredInsertOne'
+        ],
+        [
+            'MySQLCreateTable5Columns',
+        ],
+        {
+            'MongoInsert100InsertMany': 'Insert100',
+            'MongoSelect100': 'Select100',
+        },
+        {
+            'MySQLInsert100': 'Insert100',
+            'MySQLSelect100': 'Select100',
+        },
+        'Mongo-MySQL',
+        f'Mongo-MySQL Difference ({lang.capitalize()})',
+        f'mongo_mysql_{lang}_difference.png',
+    )
+
+# Plot difference of mongo & cassandra
+for lang in langs:
+    plot_db_difference(
+        dfs['mongo'][lang],
+        dfs['cassandra'][lang],
+        [
+            'MongoInsertUnstructured',
+            'MongoInsert100UnstructuredInsertOne'
+        ],
+        [
+            'Example1',
+            'CassandraCreateTable5Columns',
+        ],
+        {
+            'MongoInsert100UnstructuredInsertMany': 'Insert100Unstructured',
+            'MongoInsertUnstructured': 'InsertUnstructured',
+            'MongoInsert100InsertMany': 'Insert100',
+            'MongoSelect100': 'Select100',
+        },
+        {
+            'CassandraWriteUnstructured100': 'Insert100Unstructured',
+            'CassandraWriteUnstructured': 'InsertUnstructured',
+            'CassandraInsert100': 'Insert100',
+            'CassandraSelect100': 'Select100',
+        },
+        'Mongo-Cassandra',
+        f'Mongo-Cassandra Difference ({lang.capitalize()})',
+        f'mongo_cassandra_{lang}_difference.png',
+    )
