@@ -15,7 +15,7 @@ def format_dict(data):
         if data[b]['success'] is False:
             continue
         d['mean'][b] = data[b]['time']['mean']
-    return pd.DataFrame(d)
+    return pd.DataFrame(d).sort_index()
 
 def plot_difference(d1, d2, colname, title, fname):
     try:

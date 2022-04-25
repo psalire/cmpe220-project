@@ -43,7 +43,7 @@ class DataPlotter:
                     if self.data[lang][b]['success'] is False:
                         continue
                     d[lang][b] = self.data[lang][b]['time']['mean']
-            df = pd.DataFrame(d)
+            df = pd.DataFrame(d).sort_index()
 
             ax = df.plot.bar()
             ax.set_xlabel('Benchmark')
@@ -63,7 +63,7 @@ class DataPlotter:
                     continue
                 for k in d.keys():
                     d[k][b] = self.data[lang][b]['time'][k]
-            df = pd.DataFrame(d)
+            df = pd.DataFrame(d).sort_index()
 
             fname = f'{self.db}_{lang}_mean_max_min.png'
             ax = df.plot.bar()
