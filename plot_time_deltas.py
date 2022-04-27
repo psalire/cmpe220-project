@@ -38,32 +38,49 @@ def plot_db_difference(
     df2_drop_rows,
     df1_rename_rows,
     df2_rename_rows,
-    colname, title, fname,
+    colname1,
+    colname2,
+    title,
+    fname,
 ):
-    df1_copy = df1.copy()
-    for k in df1_drop_rows:
-        try:
-            df1_copy.drop(k, inplace=True)
-        except Exception as _: pass
-    df1_copy.rename(
-        index=df1_rename_rows,
-        inplace=True,
-    )
-    df2_copy = df2.copy()
-    for k in df2_drop_rows:
-        try:
-            df2_copy.drop(k, inplace=True)
-        except Exception as _: pass
-    df2_copy.rename(
-        index=df2_rename_rows,
-        inplace=True,
-    )
+    try:
+        df1_copy = df1.copy()
+        for k in df1_drop_rows:
+            try:
+                df1_copy.drop(k, inplace=True)
+            except Exception as _: pass
+        df1_copy.rename(
+            index=df1_rename_rows,
+            inplace=True,
+        )
+        df2_copy = df2.copy()
+        for k in df2_drop_rows:
+            try:
+                df2_copy.drop(k, inplace=True)
+            except Exception as _: pass
+        df2_copy.rename(
+            index=df2_rename_rows,
+            inplace=True,
+        )
 
-    plot_difference(
-        df1_copy,
-        df2_copy,
-        colname, title, fname
-    )
+        df_compare = pd.DataFrame()
+        df_compare[colname1] = df1_copy['mean']
+        df_compare[colname2] = df2_copy['mean']
+        ax = df_compare.plot.bar()
+        ax.set_xlabel('Benchmark')
+        ax.set_ylabel('Time (ms)')
+        ax.set_title(title)
+        plt.savefig(fname, bbox_inches='tight')
+        print(f'Saved {fname}')
+    except Exception as e:
+        print(f'Failed to plot {fname}')
+        print(e)
+    # df_compare['']
+    # plot_difference(
+    #     df1_copy,
+    #     df2_copy,
+    #     colname, title, fname
+    # )
 
 with open('results_mongo.json') as f:
     mongo_data = json.load(f)
@@ -112,7 +129,8 @@ for lang in langs:
             'MySQLInsert100': 'Insert100',
             'MySQLSelect100': 'Select100',
         },
-        'Mongo-MySQL',
+        'Mongo',
+        'MySQL',
         f'Mongo-MySQL Difference ({lang.capitalize()})',
         f'mongo_mysql_{lang}_difference.png',
     )
@@ -142,7 +160,8 @@ for lang in langs:
             'CassandraWriteUnstructured': 'InsertUnstructured',
             'CassandraInsert100': 'Insert100',
         },
-        'Mongo-Cassandra',
+        'Mongo',
+        'Cassandra',
         f'Mongo-Cassandra Difference ({lang.capitalize()})',
         f'mongo_cassandra_{lang}_difference.png',
     )
@@ -170,7 +189,8 @@ for lang in langs:
             'CassandraInsert100': 'Insert100',
             'CassandraSelect100': 'Select100',
         },
-        'MySQL-Cassandra',
+        'MySQL',
+        'Cassandra',
         f'MySQL-Cassandra Difference ({lang.capitalize()})',
         f'mysql_cassandra_{lang}_difference.png',
     )
