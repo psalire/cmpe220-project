@@ -2,5 +2,6 @@ env
 __pycache__
 java_benchmarks/target
 *.pyc
-*.json
-*.png
+./*.json
+./*.png
+.vscode
