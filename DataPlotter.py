@@ -22,7 +22,7 @@ class DataPlotter:
 
             ax.set_title(f'{lang.capitalize()} {self.db} Benchmark',
                     loc ='center',)
-            ax.set_xticklabels(title,rotation=90)
+            ax.set_xticklabels(title,rotation=0)
 
             plt.xlabel('Benchmark', fontweight ='bold')
             plt.ylabel('Mean Time(ms)', fontweight ='bold')
@@ -49,6 +49,7 @@ class DataPlotter:
             ax.set_xlabel('Benchmark')
             ax.set_ylabel('Mean time (ms)')
             ax.set_title(f'{self.db} Benchmarks')
+            plt.xticks(rotation=0)
             plt.savefig(fname, bbox_inches='tight')
             logging.info(f'Created plot {fname}')
         except Exception as e:
@@ -70,6 +71,7 @@ class DataPlotter:
             ax.set_xlabel('Benchmark')
             ax.set_ylabel('Time (ms)')
             ax.set_title(f'{self.db} {lang.capitalize()} Benchmarks')
+            plt.xticks(rotation=0)
             plt.savefig(fname, bbox_inches='tight')
             logging.info(f'Created plot {fname}')
 

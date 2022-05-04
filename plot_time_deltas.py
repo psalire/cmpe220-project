@@ -25,6 +25,7 @@ def plot_difference(d1, d2, colname, title, fname):
         ax.set_xlabel('Benchmark')
         ax.set_ylabel('Time (ms)')
         ax.set_title(title)
+        plt.xticks(rotation=0)
         plt.savefig(fname, bbox_inches='tight')
         print(f'Saved {fname}')
     except Exception as e:
@@ -70,6 +71,7 @@ def plot_db_difference(
         ax.set_xlabel('Benchmark')
         ax.set_ylabel('Time (ms)')
         ax.set_title(title)
+        plt.xticks(rotation=0)
         plt.savefig(fname, bbox_inches='tight')
         print(f'Saved {fname}')
     except Exception as e:
